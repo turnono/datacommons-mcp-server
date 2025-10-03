@@ -86,9 +86,9 @@ def create_server():
             place_dcid: The DCID of the place to get data for
             child_place_type: Optional child place type to get data for
             source_override: Optional source to override the default data source
-            date: Date to get data for (default: latest available)
-            date_range_start: Start date for date range queries
-            date_range_end: End date for date range queries
+            date: Date to get data for (default: latest available). If date_range_start or date_range_end are provided, this is automatically set to 'range'
+            date_range_start: Start date for date range queries (automatically enables range mode)
+            date_range_end: End date for date range queries (automatically enables range mode)
             ctx: Smithery context for accessing session configuration
 
         Returns:
@@ -104,6 +104,10 @@ def create_server():
         # Create DC client with the API key
         dc_settings = settings.BaseDCSettings(DC_API_KEY=api_key)
         dc_client = create_dc_client(dc_settings)
+        
+        # Auto-detect date range mode if date_range parameters are provided
+        if date_range_start is not None or date_range_end is not None:
+            date = 'range'
         
         # Call the real get_observations service
         return await get_observations_service(
