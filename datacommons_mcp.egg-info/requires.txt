@@ -1,6 +1,5 @@
-# Core dependencies
-fastapi
-uvicorn
+mcp>=1.15.0
+smithery>=0.4.2
 fastmcp
 requests
 datacommons-client

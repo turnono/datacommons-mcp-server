@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+datacommons_mcp/server.py
+datacommons_mcp.egg-info/PKG-INFO
+datacommons_mcp.egg-info/SOURCES.txt
+datacommons_mcp.egg-info/dependency_links.txt
+datacommons_mcp.egg-info/entry_points.txt
+datacommons_mcp.egg-info/requires.txt
+datacommons_mcp.egg-info/top_level.txt

@@ -1,12 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "datacommons-mcp"
 version = "1.0.0"
 description = "Data Commons MCP server."
 readme = "README.md"
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11"
 dependencies = [
-    "fastapi",
-    "uvicorn",
+    "mcp>=1.15.0",
+    "smithery>=0.4.2",
     "fastmcp",
     "requests",
     "datacommons-client",
@@ -17,11 +21,8 @@ dependencies = [
 urls = {Homepage = "https://github.com/datacommonsorg/agent-toolkit"}
 
 [project.scripts]
-datacommons-mcp = "datacommons_mcp.cli:cli"
-
-[build-system]
-requires = ["uv", "setuptools"]
-build-backend = "setuptools.build_meta"
+dev = "smithery.cli.dev:main"
+playground = "smithery.cli.playground:main"
 
 [tool.setuptools]
 include-package-data = true
@@ -33,3 +34,5 @@ include = ["datacommons_mcp*"]
 [tool.setuptools.package-data]
 datacommons_mcp = ["**/*.json"]
 
+[tool.smithery] 
+server = "datacommons_mcp.server:create_server"
