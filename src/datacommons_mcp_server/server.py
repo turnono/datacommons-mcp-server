@@ -8,10 +8,10 @@ from mcp.server.fastmcp import Context, FastMCP
 from pydantic import BaseModel, Field
 from smithery.decorators import smithery
 
-# Set a default API key for build time to prevent validation errors
-os.environ.setdefault('DC_API_KEY', 'build-time-key')
+# Don't set a default API key - require users to provide their own
+# This ensures proper API key management and prevents shared key usage
 
-# Import DataCommons functions after setting default API key
+# Import DataCommons functions - will require proper API key from users
 from datacommons_mcp.server import search_indicators, get_observations, validate_child_place_types
 
 
@@ -32,10 +32,17 @@ def create_server():
     def search_indicators_tool(query: str, ctx: Context) -> str:
         """Search for available variables and topics in DataCommons."""
         try:
-            # Set API key from session config
+            # Get API key from session config
             session_config = ctx.session_config
-            if session_config and hasattr(session_config, 'dc_api_key'):
-                os.environ['DC_API_KEY'] = session_config.dc_api_key
+            if not session_config or not hasattr(session_config, 'dc_api_key') or not session_config.dc_api_key:
+                return "Error: DataCommons API key is required. Please provide your API key in the configuration."
+            
+            # Validate API key format (basic check)
+            if session_config.dc_api_key == 'build-time-key' or len(session_config.dc_api_key) < 10:
+                return "Error: Invalid API key. Please provide a valid DataCommons API key."
+            
+            # Set API key for this request
+            os.environ['DC_API_KEY'] = session_config.dc_api_key
             
             # Call the DataCommons search function
             result = search_indicators(query)
@@ -47,10 +54,17 @@ def create_server():
     def get_observations_tool(variable_dcid: str, place_dcid: str, ctx: Context) -> str:
         """Fetch statistical data for a given variable and place."""
         try:
-            # Set API key from session config
+            # Get API key from session config
             session_config = ctx.session_config
-            if session_config and hasattr(session_config, 'dc_api_key'):
-                os.environ['DC_API_KEY'] = session_config.dc_api_key
+            if not session_config or not hasattr(session_config, 'dc_api_key') or not session_config.dc_api_key:
+                return "Error: DataCommons API key is required. Please provide your API key in the configuration."
+            
+            # Validate API key format (basic check)
+            if session_config.dc_api_key == 'build-time-key' or len(session_config.dc_api_key) < 10:
+                return "Error: Invalid API key. Please provide a valid DataCommons API key."
+            
+            # Set API key for this request
+            os.environ['DC_API_KEY'] = session_config.dc_api_key
             
             # Call the DataCommons observations function
             result = get_observations(variable_dcid, place_dcid)
@@ -62,10 +76,17 @@ def create_server():
     def validate_child_place_types_tool(parent_place: str, child_place_type: str, ctx: Context) -> str:
         """Validate child place types for a given parent place."""
         try:
-            # Set API key from session config
+            # Get API key from session config
             session_config = ctx.session_config
-            if session_config and hasattr(session_config, 'dc_api_key'):
-                os.environ['DC_API_KEY'] = session_config.dc_api_key
+            if not session_config or not hasattr(session_config, 'dc_api_key') or not session_config.dc_api_key:
+                return "Error: DataCommons API key is required. Please provide your API key in the configuration."
+            
+            # Validate API key format (basic check)
+            if session_config.dc_api_key == 'build-time-key' or len(session_config.dc_api_key) < 10:
+                return "Error: Invalid API key. Please provide a valid DataCommons API key."
+            
+            # Set API key for this request
+            os.environ['DC_API_KEY'] = session_config.dc_api_key
             
             # Call the DataCommons validation function
             result = validate_child_place_types(parent_place, child_place_type)
