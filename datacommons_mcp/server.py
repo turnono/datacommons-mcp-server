@@ -15,27 +15,15 @@
 Server module for the DC MCP server.
 """
 
-import asyncio
 import logging
 import os
-import types
-from typing import Union, get_args, get_origin
 
 from mcp.server.fastmcp import Context, FastMCP
-from pydantic import ValidationError
 from smithery.decorators import smithery
 from pydantic import BaseModel, Field
 
 import datacommons_mcp.settings as settings
 from datacommons_mcp.clients import create_dc_client
-from datacommons_mcp.data_models.charts import (
-    CHART_CONFIG_MAP,
-    DataCommonsChartConfig,
-    HierarchyLocation,
-    MultiPlaceLocation,
-    SinglePlaceLocation,
-    SingleVariableChart,
-)
 from datacommons_mcp.data_models.observations import (
     ObservationDateType,
     ObservationToolResponse,
