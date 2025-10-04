@@ -17,6 +17,7 @@ Server module for the DC MCP server.
 
 import asyncio
 import logging
+import os
 import types
 from typing import Union, get_args, get_origin
 
@@ -56,6 +57,7 @@ logger = logging.getLogger(__name__)
 # Configuration schema for Smithery
 class ConfigSchema(BaseModel):
     dc_api_key: str = Field(..., description="Data Commons API key for accessing the Data Commons API")
+
 
 def create_mcp_server():
     """Create a standard FastMCP server for container deployment."""
@@ -238,15 +240,14 @@ def create_server():
         Search for data indicators and topics in Data Commons.
 
         This tool searches the Data Commons knowledge graph for statistical
-        variables (indicators) and topics that match the given query. It can
-        optionally filter results by specific places.
+        variables, topics, and other indicators that match your query.
 
         Args:
             query: Search query string
-            places: Optional list of place DCIDs to filter results
-            per_search_limit: Maximum number of results per search (default: 10)
-            include_topics: Whether to include topic results (default: True)
-            maybe_bilateral: Whether to include bilateral indicators (default: False)
+            places: Optional list of place DCIDs to limit search to
+            per_search_limit: Maximum number of results per search type
+            include_topics: Whether to include topic results
+            maybe_bilateral: Whether to include bilateral indicators
             ctx: Smithery context for accessing session configuration
 
         Returns:

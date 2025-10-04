@@ -30,7 +30,9 @@ def http(host: str, port: int) -> None:
 
         # Create and run the MCP server
         mcp_server = create_mcp_server()
-        mcp_server.run(host=host, port=port, transport="streamable-http")
+        
+        # Run with streamable HTTP transport
+        mcp_server.run(transport="streamable-http")
 
     except ImportError as e:
         click.echo(f"Error importing server: {e}", err=True)
