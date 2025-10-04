@@ -21,14 +21,16 @@ def serve() -> None:
 def http(host: str, port: int) -> None:
     """Start the MCP server in Streamable HTTP mode."""
     try:
-        from datacommons_mcp.server import mcp
+        from datacommons_mcp.server import create_mcp_server
 
         click.echo("Starting DataCommons MCP server in Streamable HTTP mode")
         click.echo(f"Server URL: http://{host}:{port}")
         click.echo(f"Streamable HTTP endpoint: http://{host}:{port}/mcp")
         click.echo("Press CTRL+C to stop")
 
-        mcp.run(host=host, port=port, transport="streamable-http")
+        # Create and run the MCP server
+        mcp_server = create_mcp_server()
+        mcp_server.run(host=host, port=port, transport="streamable-http")
 
     except ImportError as e:
         click.echo(f"Error importing server: {e}", err=True)

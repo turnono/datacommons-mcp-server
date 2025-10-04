@@ -57,6 +57,110 @@ logger = logging.getLogger(__name__)
 class ConfigSchema(BaseModel):
     dc_api_key: str = Field(..., description="Data Commons API key for accessing the Data Commons API")
 
+def create_mcp_server():
+    """Create a standard FastMCP server for container deployment."""
+    server = FastMCP(name="DataCommons MCP Server")
+    
+    @server.tool()
+    async def get_observations(
+        variable_dcid: str,
+        place_dcid: str,
+        child_place_type: str | None = None,
+        source_override: str | None = None,
+        date: str = ObservationDateType.LATEST.value,
+        date_range_start: str | None = None,
+        date_range_end: str | None = None,
+    ) -> ObservationToolResponse:
+        """
+        Get observations for a variable and place from Data Commons.
+
+        This tool retrieves statistical observations (data points) for a specific
+        variable (statistical measure) and place (geographic location) from the
+        Data Commons knowledge graph.
+
+        Args:
+            variable_dcid: The DCID of the statistical variable to get data for
+            place_dcid: The DCID of the place to get data for
+            child_place_type: Optional child place type to get data for
+            source_override: Optional source to override the default data source
+            date: Date to get data for (default: latest available). If date_range_start or date_range_end are provided, this is automatically set to 'range'
+            date_range_start: Start date for date range queries (automatically enables range mode)
+            date_range_end: End date for date range queries (automatically enables range mode)
+
+        Returns:
+            ObservationToolResponse containing the requested observations
+        """
+        # Get API key from environment
+        api_key = os.getenv('DC_API_KEY')
+        if not api_key:
+            raise ValueError("DC_API_KEY environment variable is required")
+        
+        # Create DC client with the API key
+        dc_settings = settings.BaseDCSettings(DC_API_KEY=api_key)
+        dc_client = create_dc_client(dc_settings)
+        
+        # Auto-detect date range mode if date_range parameters are provided
+        if date_range_start is not None or date_range_end is not None:
+            date = 'range'
+        
+        # Call the real get_observations service
+        return await get_observations_service(
+            client=dc_client,
+            variable_dcid=variable_dcid,
+            place_dcid=place_dcid,
+            child_place_type=child_place_type,
+            source_override=source_override,
+            date=date,
+            date_range_start=date_range_start,
+            date_range_end=date_range_end,
+        )
+
+    @server.tool()
+    async def search_indicators(
+        query: str,
+        places: list[str] | None = None,
+        per_search_limit: int = 10,
+        include_topics: bool = True,
+        maybe_bilateral: bool = False,
+    ) -> SearchResponse:
+        """
+        Search for data indicators and topics in Data Commons.
+
+        This tool searches the Data Commons knowledge graph for statistical
+        variables, topics, and other indicators that match your query.
+
+        Args:
+            query: Search query string
+            places: Optional list of place DCIDs to limit search to
+            per_search_limit: Maximum number of results per search type
+            include_topics: Whether to include topic results
+            maybe_bilateral: Whether to include bilateral indicators
+
+        Returns:
+            SearchResponse containing matching indicators and topics
+        """
+        # Get API key from environment
+        api_key = os.getenv('DC_API_KEY')
+        if not api_key:
+            raise ValueError("DC_API_KEY environment variable is required")
+        
+        # Create DC client with the API key
+        dc_settings = settings.BaseDCSettings(DC_API_KEY=api_key)
+        dc_client = create_dc_client(dc_settings)
+        
+        # Call the real search_indicators service
+        return await search_indicators_service(
+            client=dc_client,
+            query=query,
+            places=places,
+            per_search_limit=per_search_limit,
+            include_topics=include_topics,
+            maybe_bilateral=maybe_bilateral,
+        )
+
+    return server
+
+
 @smithery.server(config_schema=ConfigSchema)
 def create_server():
     """Create and return a FastMCP server instance with session config."""

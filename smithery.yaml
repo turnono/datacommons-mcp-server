@@ -11,3 +11,5 @@ startCommand:
     required: ["dc_api_key"]
   exampleConfig:
     dc_api_key: "your-google-api-key-here"
+env:
+  DC_API_KEY: "${dc_api_key}"
