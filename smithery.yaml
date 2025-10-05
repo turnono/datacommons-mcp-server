@@ -1,15 +1,1 @@
-runtime: "container"
-startCommand:
-  type: "http"
-  configSchema:
-    type: "object"
-    properties:
-      dc_api_key:
-        type: "string"
-        title: "Data Commons API Key"
-        description: "Google API key for Data Commons"
-    required: ["dc_api_key"]
-  exampleConfig:
-    dc_api_key: "your-google-api-key-here"
-env:
-  DC_API_KEY: "${dc_api_key}"
+runtime: "python"
