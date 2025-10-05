@@ -1,5 +1,7 @@
 # DataCommons MCP Server
 
+[![smithery badge](https://smithery.ai/badge/@turnono/datacommons-mcp-server)](https://smithery.ai/server/@turnono/datacommons-mcp-server)
+
 A Model Context Protocol (MCP) server for accessing Data Commons API data.
 
 ## Features
@@ -10,6 +12,14 @@ A Model Context Protocol (MCP) server for accessing Data Commons API data.
 - HTTP and stdio transport modes
 
 ## Installation
+
+### Installing via Smithery
+
+To install Data Commons automatically via [Smithery](https://smithery.ai/server/@turnono/datacommons-mcp-server):
+
+```bash
+npx -y @smithery/cli install @turnono/datacommons-mcp-server
+```
 
 ### Using pip
 
